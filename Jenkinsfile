@@ -38,7 +38,7 @@ pipeline{
                             nexusArtifactUploader artifacts: 
                             [[artifactId: "${ArtifactId}", 
                             classifier: '', 
-                            file: 'target/KshitijDevOpsLab-0.0.4-SNAPSHOT.war', 
+                            file: "target/${ArtifactId}-${Version}.war', 
                             type: 'war']], 
                             credentialsId: '60dd6ec6-ffe3-4779-bc02-4257ae230b1c', 
                             groupId: "${GroupId}", 
