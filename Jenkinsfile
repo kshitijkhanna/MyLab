@@ -4,11 +4,17 @@ pipeline{
     tools {
         maven 'maven'
     }
+    environment{
+        ArtifactId = readMavenPom().getArtifactId()
+        Version = readMavenPom().getVersion()
+        Name = readMavenPom().getName()
+        GroupId = readMavenPom().getGroupId()
+    }
 
     stages {
         // Specify various stage with in stages
 
-        // stage 1. Build
+        // stage 1. Build -- maven plugin
         stage ('Build'){
             steps {
                 sh 'mvn clean install package'
@@ -23,14 +29,34 @@ pipeline{
             }
         }
 
-        // Stage3 : Publish the source code to Sonarqube
+        // Stage3 : Publish the source code to Sonarqube -- nexus plugin
         stage ('Publish to nexus'){
             steps {
-                    nexusArtifactUploader artifacts: [[artifactId: 'KshitijDevOpsLab', classifier: '', file: 'target/KshitijDevOpsLab-0.0.4-SNAPSHOT.war', type: 'war']], credentialsId: '60dd6ec6-ffe3-4779-bc02-4257ae230b1c', groupId: 'com.kshitijlab', nexusUrl: '172.20.10.72:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'KshitijDevOpsLab-SNAPSHOT', version: '0.0.4-SNAPSHOT'
+                    nexusArtifactUploader artifacts: 
+                    [[artifactId: 'KshitijDevOpsLab', 
+                      classifier: '', 
+                      file: 'target/KshitijDevOpsLab-0.0.4-SNAPSHOT.war', 
+                      type: 'war']], 
+                      credentialsId: '60dd6ec6-ffe3-4779-bc02-4257ae230b1c', 
+                      groupId: 'com.kshitijlab', 
+                      nexusUrl: '172.20.10.72:8081', 
+                      nexusVersion: 'nexus3', 
+                      protocol: 'http', 
+                      repository: 'KshitijDevOpsLab-SNAPSHOT', 
+                      version: '0.0.4-SNAPSHOT'
                 }
             }
+        //stage 4 : print environment variables --pipeline utility plugin
+        stage('print environment variables'){
+            steps{
+                echo "Artifact ID is '${ArtifactId}'"
+                echo "Version is '${Version}'"
+                echo "Name is '${Name}'"
 
-         //stage 4 : deploy
+            }
+        }
+
+        //stage 4 : deploy
         stage ('Deploy'){
             steps{
                 echo ' deploy......'
