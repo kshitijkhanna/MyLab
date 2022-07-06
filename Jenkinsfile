@@ -32,18 +32,22 @@ pipeline{
         // Stage3 : Publish the source code to Sonarqube -- nexus plugin
         stage ('Publish to nexus'){
             steps {
-                    nexusArtifactUploader artifacts: 
-                    [[artifactId: "${ArtifactId}", 
-                      classifier: '', 
-                      file: 'target/KshitijDevOpsLab-0.0.4-SNAPSHOT.war', 
-                      type: 'war']], 
-                      credentialsId: '60dd6ec6-ffe3-4779-bc02-4257ae230b1c', 
-                      groupId: "${GroupId}", 
-                      nexusUrl: '172.20.10.72:8081', 
-                      nexusVersion: 'nexus3', 
-                      protocol: 'http', 
-                      repository: 'KshitijDevOpsLab-SNAPSHOT', 
-                      version: "${Version}"
+                //script block required as we want to deal with repository where the code should be published.snapshot or release
+                    script{
+                            def NexusRepo = Version.endsWith("SNAPSHOT") ? "KshitijDevOpsLab-SNAPSHOT" : "KshitijDevOpsLab-RELEASE"
+                            nexusArtifactUploader artifacts: 
+                            [[artifactId: "${ArtifactId}", 
+                            classifier: '', 
+                            file: 'target/KshitijDevOpsLab-0.0.4-SNAPSHOT.war', 
+                            type: 'war']], 
+                            credentialsId: '60dd6ec6-ffe3-4779-bc02-4257ae230b1c', 
+                            groupId: "${GroupId}", 
+                            nexusUrl: '172.20.10.72:8081', 
+                            nexusVersion: 'nexus3', 
+                            protocol: 'http', 
+                            repository: "${NexusRepo}", 
+                            version: "${Version}"
+                    }
                 }
             }
         //stage 4 : print environment variables --pipeline utility plugin
