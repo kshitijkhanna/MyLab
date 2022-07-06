@@ -33,17 +33,17 @@ pipeline{
         stage ('Publish to nexus'){
             steps {
                     nexusArtifactUploader artifacts: 
-                    [[artifactId: '${ArtifactId}', 
+                    [[artifactId: "${ArtifactId}", 
                       classifier: '', 
                       file: 'target/KshitijDevOpsLab-0.0.4-SNAPSHOT.war', 
                       type: 'war']], 
                       credentialsId: '60dd6ec6-ffe3-4779-bc02-4257ae230b1c', 
-                      groupId: '${GroupId}', 
+                      groupId: "${GroupId}", 
                       nexusUrl: '172.20.10.72:8081', 
                       nexusVersion: 'nexus3', 
                       protocol: 'http', 
                       repository: 'KshitijDevOpsLab-SNAPSHOT', 
-                      version: '${Version}'
+                      version: "${Version}"
                 }
             }
         //stage 4 : print environment variables --pipeline utility plugin
