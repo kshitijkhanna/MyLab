@@ -4,6 +4,7 @@ pipeline{
     tools {
         maven 'maven'
     }
+    //readmavenpom pipeline utility plugin
     environment{
         ArtifactId = readMavenPom().getArtifactId()
         Version = readMavenPom().getVersion()
@@ -60,10 +61,24 @@ pipeline{
             }
         }
 
-        //stage 4 : deploy
+        //stage 5 : deploy
         stage ('Deploy'){
             steps{
                 echo ' deploy......'
+                sshPublisher(publishers: 
+                [sshPublisherDesc(
+                    configName: 'Ansible_Controller', 
+                    transfers: [
+                        sshTransfer(
+                                cleanRemote:false,
+                                execCommand: 'ansible-playbook /opt/playbooks/installanddeploy.yaml -i /opt/playbooks/hosts',
+                                execTimeout: 120000
+                        )
+                    ], 
+                    usePromotionTimestamp: false, 
+                    useWorkspaceInPromotion: false, 
+                    verbose: false)
+                    ])    
             }
         }
 
