@@ -62,16 +62,16 @@ pipeline{
         }
 
         //stage 5 : deploy
-        stage ('Deploy to Docker'){
+        stage ('Deploy'){
             steps{
-                echo ' Deploy to Docker..'
+                echo ' Deploy.'
                 sshPublisher(publishers: 
                 [sshPublisherDesc(
                     configName: 'Ansible_Controller', 
                     transfers: [
                         sshTransfer(
                                 cleanRemote:false,
-                                execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy_docker.yaml -i /opt/playbooks/hosts',
+                                execCommand: 'ansible-playbook /opt/playbooks/installanddeploy.yaml -i /opt/playbooks/hosts',
                                 execTimeout: 120000
                         )
                     ], 
@@ -82,17 +82,17 @@ pipeline{
             }
         }
 
-        //stage 5 : deploy build artifact to docker
-        stage ('Deploy'){
+        //stage 6 : deploy build artifact to docker
+        stage ('Deploy to Docker'){
             steps{
-                echo ' deploy......'
+                echo ' deploy to Docker......'
                 sshPublisher(publishers: 
                 [sshPublisherDesc(
                     configName: 'Ansible_Controller', 
                     transfers: [
                         sshTransfer(
                                 cleanRemote:false,
-                                execCommand: 'ansible-playbook /opt/playbooks/installanddeploy.yaml -i /opt/playbooks/hosts',
+                                execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy_docker.yaml -i /opt/playbooks/hosts',
                                 execTimeout: 120000
                         )
                     ], 
