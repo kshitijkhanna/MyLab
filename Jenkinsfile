@@ -82,30 +82,6 @@ pipeline{
             }
         }
 
-        //stage 6 : deploy build artifact to docker
-        stage ('Deploy to Docker'){
-            steps{
-                echo ' deploy to Docker......'
-                sshPublisher(publishers: 
-                [sshPublisherDesc(
-                    configName: 'Ansible_Controller', 
-                    transfers: [
-                        sshTransfer(
-                                cleanRemote:false,
-                                execCommand: 'ansible-playbook /opt/playbooks/downloadanddeploy_docker.yaml -i /opt/playbooks/hosts',
-                                execTimeout: 120000
-                        )
-                    ], 
-                    usePromotionTimestamp: false, 
-                    useWorkspaceInPromotion: false, 
-                    verbose: false)
-                    ])    
-            }
-        }
-
-        
-       
-
         }
 
        
